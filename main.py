@@ -2,38 +2,31 @@ import pygame
 import random
 import math
 
-# Inicialización de Pygame
 pygame.init()
 
-# Dimensiones de la pantalla
-ancho_pantalla = 800
-alto_pantalla = 600
+ancho_pantalla = 900
+alto_pantalla = 700
 
-# Creación de la pantalla
 pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 pygame.display.set_caption("Pac-Man")
 
-# Colores
 NEGRO = (0, 0, 0)
 AZUL = (0, 0, 255)
 
-# Tamaño de las celdas del laberinto
-tamaño_celda = 40
+tamaño_celda = 47
 
-# Carga de imágenes para la animación de Pac-Man
 pacman_imgs = [
-    pygame.transform.scale(pygame.image.load('assets/player_images/1.png'), (tamaño_celda, tamaño_celda)),
-    pygame.transform.scale(pygame.image.load('assets/player_images/2.png'), (tamaño_celda, tamaño_celda)),
-    pygame.transform.scale(pygame.image.load('assets/player_images/3.png'), (tamaño_celda, tamaño_celda)),
-    pygame.transform.scale(pygame.image.load('assets/player_images/4.png'), (tamaño_celda, tamaño_celda))
+    pygame.transform.scale(pygame.image.load('assets/player_images/policia.png'), (tamaño_celda, tamaño_celda)),
+    pygame.transform.scale(pygame.image.load('assets/player_images/policia.png'), (tamaño_celda, tamaño_celda)),
+    pygame.transform.scale(pygame.image.load('assets/player_images/policia.png'), (tamaño_celda, tamaño_celda)),
+    pygame.transform.scale(pygame.image.load('assets/player_images/policia.png'), (tamaño_celda, tamaño_celda))
 ]
-# Carga de imágenes de los fantasmas y cereza
-fantasma_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/blue.png'), (tamaño_celda, tamaño_celda))
+
+fantasma_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/ponchoRojo.png'), (tamaño_celda, tamaño_celda))
 fantasma_muerto_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/dead.png'), (tamaño_celda, tamaño_celda))
 fantasma_powerup_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/powerup.png'), (tamaño_celda, tamaño_celda))
-cereza_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/cherry.png'), (tamaño_celda, tamaño_celda))  # Placeholder para la imagen de la cereza
+cereza_img = pygame.transform.scale(pygame.image.load('assets/ghost_images/cerveza.png'), (tamaño_celda, tamaño_celda)) 
 
-# Definición del laberinto (ahora una lista de listas para poder modificar)
 laberinto = [
     list("*********************"),
     list("*.......*....C......*"),
@@ -52,33 +45,28 @@ laberinto = [
     list("*********************")
 ]
 
-# Variables de posición y velocidad de Pac-Man
 pacman_x = 1 * tamaño_celda
 pacman_y = 1 * tamaño_celda
-velocidad_pacman = 1
+velocidad_pacman = 0.5
 direccion_pacman = None
 direccion_proxima = None
 
-# Variables de animación de Pac-Man
+
 indice_pacman = 0
 reloj_pacman = 0
 
-# Puntos
 puntos = 0
 vidas = 3
 
-# Variables de los fantasmas
 fantasmas = [
-    {"x": 10 * tamaño_celda, "y": 10 * tamaño_celda, "velocidad": 1, "estado": "normal", "direccion": "izquierda"},
-    {"x": 5 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 1, "estado": "normal", "direccion": "derecha"},
-    {"x": 15 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 1, "estado": "normal", "direccion": "abajo"}
+    {"x": 10 * tamaño_celda, "y": 10 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "izquierda"},
+    {"x": 5 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "derecha"},
+    {"x": 15 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "abajo"}
 ]
 
-# Duración del superpoder
 superpoder = False
-duracion_superpoder = 800  # El superpoder dura 800 ciclos
+duracion_superpoder = 800 
 
-# Función para dibujar el laberinto
 def dibujar_laberinto():
     pantalla.fill(NEGRO)
     for fila in range(len(laberinto)):
@@ -129,7 +117,7 @@ def mover_pacman():
 
     # Actualizar la animación de Pac-Man
     reloj_pacman += 1
-    if reloj_pacman % 10 == 0:  # Cambiar la imagen cada 10 ciclos
+    if reloj_pacman % 10 == 0: 
         indice_pacman = (indice_pacman + 1) % 4
 
 # Función para verificar si el movimiento es válido
@@ -144,7 +132,7 @@ def es_valido_movimiento(direccion, x, y):
         return laberinto[int(y // tamaño_celda)][int((x + tamaño_celda) // tamaño_celda)] != "*"
     return False
 
-# Función para mover fantasmas de manera más organizada
+# Función para mover fantasmas 
 def mover_fantasmas():
     for fantasma in fantasmas:
         if superpoder and fantasma["estado"] != "muerto":
@@ -178,7 +166,6 @@ def detectar_colisiones():
                 fantasma["estado"] = "muerto"
                 fantasma["x"], fantasma["y"] = 10 * tamaño_celda, 10 * tamaño_celda  # Fantasma vuelve a la base
 
-# Función para mostrar el mensaje de "Perdiste" con opciones
 def mostrar_mensaje_perdida():
     pantalla.fill(NEGRO)
     fuente = pygame.font.SysFont(None, 72)
@@ -186,10 +173,16 @@ def mostrar_mensaje_perdida():
     pantalla.blit(texto, (ancho_pantalla // 2 - 150, alto_pantalla // 2 - 50))
     
     fuente_pequeña = pygame.font.SysFont(None, 48)
-    boton_cerrar = pygame.Rect(ancho_pantalla // 2 - 150, alto_pantalla // 2 + 50, 300, 50)
+    
+    boton_jugar_de_nuevo = pygame.Rect(ancho_pantalla // 2 - 150, alto_pantalla // 2 + 50, 300, 50)
+    pygame.draw.rect(pantalla, (0, 200, 0), boton_jugar_de_nuevo)
+    texto_jugar_de_nuevo = fuente_pequeña.render("Jugar de nuevo", True, (255, 255, 255))
+    pantalla.blit(texto_jugar_de_nuevo, (ancho_pantalla // 2 - 110, alto_pantalla // 2 + 55))
+    
+    boton_cerrar = pygame.Rect(ancho_pantalla // 2 - 150, alto_pantalla // 2 + 110, 300, 50)
     pygame.draw.rect(pantalla, (200, 0, 0), boton_cerrar)
     texto_cerrar = fuente_pequeña.render("Cerrar", True, (255, 255, 255))
-    pantalla.blit(texto_cerrar, (ancho_pantalla // 2 - 50, alto_pantalla // 2 + 55))
+    pantalla.blit(texto_cerrar, (ancho_pantalla // 2 - 50, alto_pantalla // 2 + 115))
 
     pygame.display.update()
 
@@ -201,18 +194,41 @@ def mostrar_mensaje_perdida():
                 pygame.quit()
                 exit()
             elif evento.type == pygame.MOUSEBUTTONDOWN:
-                if boton_cerrar.collidepoint(evento.pos):
+                if boton_jugar_de_nuevo.collidepoint(evento.pos):
+                    esperando_respuesta = False
+                    reiniciar_juego()  
+                elif boton_cerrar.collidepoint(evento.pos):
                     esperando_respuesta = False
                     pygame.quit()
                     exit()
+                    
+def reiniciar_juego():
+    global pacman_x, pacman_y, direccion_pacman, direccion_proxima, puntos, vidas, fantasmas, superpoder, duracion_superpoder
+    pacman_x, pacman_y = 1 * tamaño_celda, 1 * tamaño_celda
+    direccion_pacman, direccion_proxima = None, None
+    puntos = 0
+    vidas = 3
+    superpoder = False
+    duracion_superpoder = 0
+    
+    fantasmas = [
+        {"x": 10 * tamaño_celda, "y": 10 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "izquierda"},
+        {"x": 5 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "derecha"},
+        {"x": 15 * tamaño_celda, "y": 5 * tamaño_celda, "velocidad": 0.5, "estado": "normal", "direccion": "abajo"}
+    ]
 
-# Función para reproducir música al perder todas las vidas
+    for fila in range(len(laberinto)):
+        for columna in range(len(laberinto[fila])):
+            if laberinto[fila][columna] == " ":
+                laberinto[fila][columna] = "."
+            elif laberinto[fila][columna] == "C":
+                pass  
+
 def reproducir_musica_perdida():
-    url_cancion = "tu_url_de_la_cancion"  # Deja aquí la URL de la canción que quieres usar
+    url_cancion = "perdida.mpeg" 
     pygame.mixer.music.load(url_cancion)
     pygame.mixer.music.play()
 
-# Bucle principal del juego
 ejecutando = True
 while ejecutando:
     for evento in pygame.event.get():
@@ -230,17 +246,15 @@ while ejecutando:
 
     mover_pacman()
 
-    # Verificar si Pac-Man come una cereza
     if laberinto[int(pacman_y // tamaño_celda)][int(pacman_x // tamaño_celda)] == "C":
         superpoder = True
-        duracion_superpoder = 800  # El superpoder dura 800 ciclos
+        duracion_superpoder = 800
         laberinto[int(pacman_y // tamaño_celda)][int(pacman_x // tamaño_celda)] = "."
-        puntos += 100  # Sumar puntos por la cereza
+        puntos += 100 
     
-    # Verificar si Pac-Man come un punto pequeño
     if laberinto[int(pacman_y // tamaño_celda)][int(pacman_x // tamaño_celda)] == ".":
-        laberinto[int(pacman_y // tamaño_celda)][int(pacman_x // tamaño_celda)] = " "  # Vaciar la celda
-        puntos += 10  # Sumar puntos por el punto pequeño
+        laberinto[int(pacman_y // tamaño_celda)][int(pacman_x // tamaño_celda)] = " " 
+        puntos += 10 
 
     mover_fantasmas()
     detectar_colisiones()
@@ -255,6 +269,5 @@ while ejecutando:
     if vidas == 0:
         reproducir_musica_perdida()
         mostrar_mensaje_perdida()
-        ejecutando = False  # Fin del juego
 
 pygame.quit()
